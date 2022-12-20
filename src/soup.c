@@ -1,10 +1,3 @@
-//The dining philosophers problem contains five philosophers sitting on a round
-//table can perform only one among two actions – eat and think. For eating, each
-// of them requires two forks, one kept beside each person. Typically, allowing
-// unrestricted access to the forks may result in a deadlock. Write a program
-// to simulate the philosophers using threads, and the forks using global variables.
-// Resolve the deadlock using semaphores.
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<pthread.h>
@@ -20,12 +13,12 @@ void eat(int phil)
 {
 	printf("\nPhilosopher %d is eating",phil);
     fatness[phil]++;
-    // sleep(1);
+    sleep(0.1);
 }
 
 void think(int phil){
     printf("\nPhilosopher %d is thinking",phil);
-    // sleep(1); // the average philosopher; sleeps on their thinking
+    sleep(0.1); // the average philosopher; sleeps on their thinking
 }
 
 int get_forks_and_souppp(int phil){
