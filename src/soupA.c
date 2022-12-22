@@ -1,49 +1,73 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <unistd.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<pthread.h>
+#include<unistd.h>
 #include <signal.h>
 
+
 int forks[5];
+int soup[2];
 int fatness[5] = {0,0,0,0,0};
 
 void eat(int phil)
 {
 	printf("\nPhilosopher %d is eating",phil);
     fatness[phil]++;
+    sleep(0.1);
 }
 
 void think(int phil){
     printf("\nPhilosopher %d is thinking",phil);
+    sleep(0.1);
 }
 
-void get_forks(int phil){
+int get_forks_and_souppp(int phil){
+
     int left = phil;
     int right = (phil+1)%5;
-    int acquired = 0;
-    while (acquired == 0){
-        if (phil%2==0){
-            if (forks[left] == 1 && forks[right] == 1){
-                forks[left] = 0;
-                forks[right] = 0;
-                acquired = 1;
+    int bowlAcquired = 0;
+    while (!bowlAcquired){
+        // try acquire bowl then forks otherwise yield all
+        if (soup[0] == 1 || soup[1] == 1){
+            if (soup[0]==1){
+                soup[0] = 0;
+            }
+            else{
+                soup[1] = 0;
             }
         }
-        else{
+        bowlAcquired = 1;
+        // try acquire forks
+        int acquired = 0;
+        while (acquired == 0){
             if (forks[right] == 1 && forks[left] == 1){
                 forks[right] = 0;
                 forks[left] = 0;
                 acquired = 1;
             }
+            else {
+                // release bowl
+                if (soup[0] == 0){
+                    soup[0] = 1;
+                }
+                else{
+                    soup[1] = 1;
+                }
+                bowlAcquired = 0;
+                break;
+            }
         }
     }
+
 }
 
-void release_forks(int phil){
-    int left = phil;
-    int right = (phil+1)%5;
+void release_forks(int phils){
+    int left = phils;
+    int right = (phils+1)%5;
     forks[left] = 1;
     forks[right] = 1;
+    int sauce = phils % 2;
+    soup[sauce] = 1;
 }
 
 void * philosophise(int phil)
@@ -51,7 +75,7 @@ void * philosophise(int phil)
     while (1) {
         think(phil);
 
-        get_forks(phil);
+        get_forks_and_souppp(phil);
 
         eat(phil);
 

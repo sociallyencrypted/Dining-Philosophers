@@ -60,7 +60,7 @@ void * philosophise(int phil)
 
         printf("\nPhilosopher %d has finished eating",phil);
 
-        release_forks_and_souppp(phil, sauce);
+        release_forks(phil, sauce);
     }
 }
 
@@ -76,7 +76,7 @@ int main()
     // call print_stats() when ctrl-c is pressed
     signal(SIGINT, print_stats);
     int philosopherIDs[5]; // the perils of the modern world, even the philosophers have been IDed
-	pthread_t threadIDs[5]; //this is excusable
+	pthread_t threadIDs[5]; // this is excusable
 	
 	for(int i=0;i<5;i++){
 		sem_init(&forks[i],0,1);
@@ -84,7 +84,7 @@ int main()
     }
 
     for (int i = 0; i < 2; i++) {
-        sem_init(&soup[i],0,1);
+        sem_init(&soup[i],0,1); // semawhore init
     }
 		
 	for(int i=0;i<5;i++){
